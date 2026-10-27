@@ -1,0 +1,6 @@
+{
+  "tv": "Epson EF-12 mini laser projector (Askey module, sti6200d101, Amlogic)",
+  "os": "Android TV 14",
+  "brand": "Epson",
+  "notes": "Second Epson, sibling of the [LS800](epson-ls800) module: Google feedback, partner auto-installs, ad services, print spooler, Chromecast; Epson projector-control and `com.epson.logcollection` kept; `com.google.android.katniss` re-enabled by the firmware (com.droidlogic), so it stays; YouTube button hard-coded to YouTube Music, Apps button dead without tvlauncher; network ADB on 5555 while USB debugging is on; config.json dock; reboot-checked"
+}

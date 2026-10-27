@@ -1,0 +1,15 @@
+{
+  "dock_apps": [
+    "com.google.android.youtube.tv",
+    "com.amazon.amazonvideo.livingroom",
+    "com.spotify.tv.android",
+    "com.google.android.videos"
+  ],
+  "hidden_apps": [
+    "com.droidlogic.android.tv",
+    "com.droidlogic.otaupgrade"
+  ],
+  "live_tv_package": "",
+  "columns": 4,
+  "rows_below_dock": 0
+}

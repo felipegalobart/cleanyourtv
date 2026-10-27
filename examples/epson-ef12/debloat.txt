@@ -1,0 +1,59 @@
+# Epson EF-12 mini laser projector, Askey Android TV module (board sti6200d101, Amlogic/droidlogic),
+# Android TV 14 (API 34), firmware UKG3.250826.001.20261009 (u-3.03-U-0, 2026-10-09).
+# Sibling of the LS800's HA90 module (examples/epson-ls800, board sti6202d101, same UKG3.250826.001 base);
+# the LS800 list applied with the differences below.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/epson-ef12/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/epson-ef12/debloat.txt com.google.android.tvlauncher
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Stock launcher: com.google.android.tvlauncher (disabled by launcher/build-and-install.sh, not here).
+# The saved Wi-Fi belongs to android.uid.system, not setupwraith (cname checked), so the setupwraith
+# Wi-Fi guard has nothing to guard on this unit; setupwraith does not claim HOME and stays enabled.
+#
+# KEEP, the Android side drives the projector itself:
+# - com.epson, com.epson.droidsettings, com.epson.visualization, com.epson.warningui,
+#   com.epson.setupcustomizer, com.epson.corneradjustment (corner keystone; this unit has no
+#   flexiblepicture/installation/bizmodeui, which the LS800 carries).
+# - com.epson.logcollection: owns Projector Settings > Information (on the LS800, disabling it crashes
+#   that screen). Opt out of operation logs on that screen instead.
+# - com.askey.zoom: picture zoom/shift control (ZoomAndShiftActivity), a projector function.
+# - com.askey.readcommands: Askey USB/boot plumbing (MEDIA_MOUNTED/BOOT_COMPLETED receivers), left alone.
+# - com.droidlogic.* : HDMI input, TV settings, middleware.
+# - Firmware updates kept by choice: com.epson.fwupdate, com.droidlogic.otaupgrade (this unit's
+#   updater; the LS800 has com.droidlogic.updater and com.askey.autousbota instead).
+# - com.google.android.youtube.tvmusic: the remote's YouTube button is hard-coded to it by Epson's
+#   framework (KEYCODE_MACRO_3, see the LS800 header); disabled it opens a Play Store page instead.
+# - Streaming and games kept by owner's choice: YouTube, Prime Video, Spotify, Play Movies,
+#   AirConsole, Play Games, Epson Online Meetings (the LS800's owner dropped Online Meetings).
+#
+# Notes from this unit (verified with screenshots, 2026-10-27):
+# - com.google.android.katniss (voice search): disabling holds for minutes, then the firmware
+#   re-enables it, and again at every boot, with `dumpsys package` naming com.droidlogic as
+#   lastDisabledCaller - the same mechanism the LS800 header records for tvrecommendations. It only
+#   runs when the mic button is pressed, so leave it; don't keep disabling it.
+# - com.google.android.tvrecommendations: not listed, same reason as on the LS800.
+# - ADB: Developer options offers Wireless debugging (TLS) with pairing; while USB debugging is on,
+#   plain network ADB also answers on 5555 (service.adb.tcp.port=5555) and accepts the paired key
+#   with no on-screen prompt, and 5555 comes back by itself after a reboot. Switching USB debugging
+#   off closes 5555 at once (checked with tools/adb-closed.py before and after a reboot). With USB
+#   debugging off, Wireless debugging does not survive a reboot either: nothing re-advertises on
+#   mDNS and 5555 refuses, so a session that only paired closes itself at the next restart.
+# - Launcher: install and HOME takeover work (mFocusedApp = com.gathin.tvhome after Home and after a
+#   reboot); power-on lands on the new Home (wm_set_resumed_activity checked). The Apps button
+#   behaviour with tvlauncher disabled is expected to match the LS800 (Android 14 sends ALL_APPS only
+#   to a system launcher); the grid lists every app either way.
+# - Reboot-checked: everything below stays disabled.
+
+# Batch 1: telemetry
+com.google.android.feedback             # Google feedback reporter
+com.android.tv.feedbackconsent          # feedback/diagnostics consent prompt
+
+# Batch 2: ads and content plumbing
+android.autoinstalls.config.askey.tvbox # Play auto-install of partner apps
+com.android.adservices.api              # Android ad services (Topics, attribution)
+com.android.printspooler                # print spooler, no printers on a projector
+
+# Batch 3: owner's choice
+# com.google.android.katniss            # firmware re-enables it (lastDisabledCaller: com.droidlogic), see header
+com.google.android.apps.mediashell      # Chromecast built-in, owner does not cast
